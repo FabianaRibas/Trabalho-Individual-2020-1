@@ -20,7 +20,6 @@ jobs:
           node-version: 14.15.1
       - name: Install dependencies
         run: |
-          cd client
           npm install 
           npm install @vue/cli@3.7.0 -g
       - name: Run client tests
