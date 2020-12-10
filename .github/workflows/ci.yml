@@ -10,6 +10,7 @@ on:
 
 jobs:        
   build:
+    name: Test, Build and Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -21,7 +22,7 @@ jobs:
     - name: Set up Node lts-alpine
       uses: actions/setup-node@v1
       with:
-        node-version: lts-alpine
+        node-version: 10.x
 
     - name: Build Docker
       env:
