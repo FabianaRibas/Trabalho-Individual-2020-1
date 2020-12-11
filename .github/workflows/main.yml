@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  deployment:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Set up Node lts-alpine
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15.1
+      - name: Install dependencies
+        run: |
+          npm install 
+          npm install @vue/cli@3.7.0 -g
+      - name: Run client tests
+        run: |
+          yarn run test:unit
+          
+      - uses: actions/checkout@v2
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Install dependencies
+        run: |
+          apt-get update -qq && apt-get install -y nodejs postgresql-client
+          apt-get update -qq && apt-get install -y build-essential libpq-dev
+          gem install bundler
+          bundle install
+      - name: Run tests
+        run: |
+            bundle exec rails test
+            
+  coverage:
+    needs: [ test ]
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '12'
+    - run: npm install -g yarn
+    - run: yarn install
+    - run: yarn build
+    - uses: paambaati/codeclimate-action@v2.2.4
+      env:
+        CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
+      with:
+        coverageCommand: yarn coverage
+           
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Build Docker
+        env:
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+        run: |
+          sudo docker-compose up --build
