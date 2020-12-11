@@ -18,7 +18,7 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: postgres
         run: |
-          docker-compose up --build
+          docker-compose up -d --build
           
 #     test:
 #       needs: [build]
