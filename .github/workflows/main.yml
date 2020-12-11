@@ -9,62 +9,73 @@ on:
     branches: [ master ]
 
 jobs:
-   build:
+  api:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - name: Build the docker-compose stack
-        env:
-          PGHOST: 127.0.0.1
-          PGUSER: postgres
-        run: |
-          docker-compose up -d --build
+      - uses: actions/checkout@v2
+
+      - name: build api containers
+        run:  docker-compose up --no-start api
+
+      - name: create database
+        run:  docker-compose run api rake db:create
+
+      - name: create migrations
+        run:  docker-compose run api rake db:migrate
+
+      - name: run api tests
+        run : docker-compose run api bundle exec rails test
+        
+  client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.15.1'
+
+    - name: build client container
+      run: docker-compose up --no-start client
+
+    - name: install dependencies
+      run: |
+        cd client/
+        yarn
+    - name: run client tests
+      run:  docker-compose run client yarn run test:unit
           
-#     test:
-#       needs: [build]
-#       runs-on: ubuntu-latest
-#       timeout-minutes: 5
-#       steps:
-#       - name: Set up Node lts-alpine
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: 14.15.1
-# #       - name: Install client dependencies
-# #         run: |
-# #           npm install 
-# #           npm install @vue/cli@3.7.0 -g
-#       - name: Run client tests
-#         run: |
-#           yarn run test:unit
+  test_api:
+    needs: [ api ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Run api tests
+      run: |
+          bundle exec rails test
           
-#       - uses: actions/checkout@v2
-#       - name: Set up Ruby 2.6
-#         uses: actions/setup-ruby@v1
-#         with:
-#           ruby-version: 2.6
-# #       - name: Install api dependencies
-# #         run: |
-# #           apt-get update -qq && apt-get install -y nodejs postgresql-client
-# #           apt-get update -qq && apt-get install -y build-essential libpq-dev
-# #           gem install bundler
-# #           bundle install
-#       - name: Run api tests
-#         run: |
-#             bundle exec rails test
-#       coverage:
-#         needs: [ test ]
-#         name: coverage
-#         runs-on: ubuntu-latest
-#         steps:
-#         - uses: actions/checkout@master
-#         - uses: actions/setup-node@master
-#           with:
-#             node-version: '12'
-#         - run: npm install -g yarn
-#         - run: yarn install
-#         - run: yarn build
-#         - uses: paambaati/codeclimate-action@v2.2.4
-#           env:
-#             CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
-#           with:
-#             coverageCommand: yarn coverage
+  test_client:
+    needs: [ client ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Run client tests
+      run: |
+        yarn run test:unit
+          
+  coverage:
+    needs: [ test_api, test_client ]
+    name: code climate coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '12'
+    - run: npm install -g yarn
+    - run: yarn install
+    - run: yarn build
+    - uses: paambaati/codeclimate-action@v2.2.4
+      env:
+        CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
+      with:
+        coverageCommand: yarn coverage
