@@ -35,7 +35,7 @@ jobs:
     steps:
     - name: Run api tests
       run: |
-          docker-compose run api bundle exec rails test
+          docker-compose run -w api bundle exec rails test
           
   test_client:
     needs: [ client ]
@@ -44,7 +44,7 @@ jobs:
     steps:
     - name: Run client tests
       run: |
-        docker-compose run client yarn run test:unit
+        docker-compose run -w client yarn run test:unit
           
   coverage:
     needs: [ test_api, test_client ]
