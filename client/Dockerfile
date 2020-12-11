@@ -7,6 +7,8 @@ ENV PATH /client/node_modules/.bin:$PATH
 COPY . .
 RUN npm install
 RUN npm install @vue/cli@3.7.0 -g
+
+# Start the main process.
 CMD ["vue-cli-service", "serve"]
 # CMD ["npm", "run", "serve"]
 
