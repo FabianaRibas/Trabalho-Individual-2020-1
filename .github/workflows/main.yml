@@ -9,45 +9,27 @@ on:
     branches: [ master ]
 
 jobs:
-  api:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - name: build api containers
-        run:  docker-compose up --build --no-start api
-        
-  client:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '14.15.1'
-
-    - name: build client container
-      run: docker-compose up --build --no-start client
+        run:   docker-compose up --build -d
           
-  test_api:
-    needs: [ api ]
+  test:
+    needs: [ build ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
     - name: Run api tests
       run: |
           docker-compose run -w api bundle exec rails test
-          
-  test_client:
-    needs: [ client ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
     - name: Run client tests
       run: |
         docker-compose run -w client yarn run test:unit
           
   coverage:
-    needs: [ test_api, test_client ]
+    needs: [ test ]
     name: code climate coverage
     runs-on: ubuntu-latest
     steps:
