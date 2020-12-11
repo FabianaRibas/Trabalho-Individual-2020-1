@@ -23,10 +23,10 @@ jobs:
     steps:
     - name: Run api tests
       run: |
-          docker-compose run -f ~/api/docker-compose.yml bundle exec rails test
+          cd api && docker-compose run bundle exec rails test
     - name: Run client tests
       run: |
-        docker-compose run -f ~/client/docker-compose.yml yarn run test:unit
+        cd client && docker-compose run yarn run test:unit
           
   coverage:
     needs: [ test ]
