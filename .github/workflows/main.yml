@@ -23,10 +23,10 @@ jobs:
     steps:
     - name: Run api tests
       run: |
-          cd api && docker-compose run bundle exec rails test
+          cd Trabalho-Individual-2020-1/api && docker-compose run bundle exec rails test
     - name: Run client tests
       run: |
-        cd client && docker-compose run yarn run test:unit
+        cd Trabalho-Individual-2020-1/client && docker-compose run yarn run test:unit
           
   coverage:
     needs: [ test ]
