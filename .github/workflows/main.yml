@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+    - uses: actions/checkout@v2
     - name: Run api tests
       run: |
           cd Trabalho-Individual-2020-1/api && docker-compose run bundle exec rails test
