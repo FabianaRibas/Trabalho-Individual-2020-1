@@ -16,24 +16,34 @@ jobs:
       - name: build api containers
         run:   docker-compose up -d --build
           
-  test:
+  api_test:
     needs: [ build ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     defaults:
       run:
-        working-directory: Trabalho-Individual-2020-1
+        working-directory: ./api
     steps:
     - uses: actions/checkout@v2
     - name: Run api tests
       run: |
         cd api && docker-compose run bundle exec rails test
+        
+  client_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+    - uses: actions/checkout@v2
     - name: Run client tests
       run: |
         cd client && docker-compose run yarn run test:unit
           
   coverage:
-    needs: [ test ]
+    needs: [ api_test, client_test ]
     name: code climate coverage
     runs-on: ubuntu-latest
     steps:
@@ -50,14 +60,14 @@ jobs:
       with:
         coverageCommand: yarn coverage
      
-  deploy:
-    needs: [ build, test ]
-    name: Deploy to Heroku
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.7.8 # This is the action
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "gces-trabalho"
-          heroku_email: "flmoranguinho@gmail.com"
+#   deploy:
+#     needs: [ build, test ]
+#     name: Deploy to Heroku
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: akhileshns/heroku-deploy@v3.7.8 # This is the action
+#         with:
+#           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#           heroku_app_name: "gces-trabalho"
+#           heroku_email: "flmoranguinho@gmail.com"
