@@ -7,7 +7,7 @@ COPY . .
 WORKDIR /api
 RUN gem install bundler
 RUN bundle install
-
+#
 # Start the main process.
 CMD ["bundle", "exec", "rake", "db:drop"]
 CMD ["bundle", "exec", "rake", "db:create"]
