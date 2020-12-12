@@ -9,7 +9,7 @@ RUN gem install bundler
 RUN bundle install
 
 # Start the main process.
-CMD ["rails", "server"]
 CMD ["bundle", "exec", "rake", "db:drop"]
 CMD ["bundle", "exec", "rake", "db:create"]
 CMD ["bundle", "exec", "rake", "db:migrate"]
+CMD ["rails", "server"]
