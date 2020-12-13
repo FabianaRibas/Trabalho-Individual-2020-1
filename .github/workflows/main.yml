@@ -27,7 +27,7 @@ jobs:
       
     - name: Build api container
       run:  |
-        docker-compose up --detach --build -d db api
+        docker-compose up --detach --build db api
         
     - name: Run api tests
       run: |
@@ -35,7 +35,7 @@ jobs:
         
     - name: Build client container
       run: |
-        docker-compose up --detach --build -d client
+        docker-compose up --detach --build client
         
     - name: Run client tests
       run: |
