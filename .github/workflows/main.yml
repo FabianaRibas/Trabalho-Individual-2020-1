@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build api containers
-        run:   docker-compose up --build
+        run:   docker-compose up --build -d
         
   api_test:
     needs: [ build ]
@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run:  |
-        docker-compose up --build
+        docker-compose up api --build -d
     - name: Run api tests
       run: |
         docker-compose run api bundle exec rails test
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run: |
-        docker-compose up --build
+        docker-compose up client --build -d
     - name: Run client tests
       run: |
         docker-compose run client yarn run test:unit
