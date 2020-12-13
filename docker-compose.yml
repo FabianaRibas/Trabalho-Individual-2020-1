@@ -47,3 +47,6 @@ services:
 networks:
   aplication_production:
     driver: bridge
+
+volumes:
+  node_modules:
