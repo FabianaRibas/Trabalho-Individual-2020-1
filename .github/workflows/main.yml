@@ -28,7 +28,7 @@ jobs:
         docker-compose up --detach --build api
     - name: Run api tests
       run: |
-        docker-compose run api bundle exec rails test
+        docker-compose run api rake test
 
   client_test:
     needs: [ build ]
