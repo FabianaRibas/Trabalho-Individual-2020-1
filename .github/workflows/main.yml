@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run:  |
-        docker-compose up --detach --build api db
+        docker-compose up --detach --build db api
     - name: Run api tests
       run: |
         docker-compose run api rake test
