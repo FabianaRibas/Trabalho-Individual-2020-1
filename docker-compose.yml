@@ -23,7 +23,7 @@ services:
       - 8080:8080
     volumes:
       - ./client:/client
-      - node_modules: /client/node_modules
+      - node_modules:/client/node_modules
 
   api:
     container_name: api
