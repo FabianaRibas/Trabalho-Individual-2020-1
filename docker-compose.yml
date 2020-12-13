@@ -23,8 +23,6 @@ services:
       - 8080:8080
     volumes:
       - ./client:/client
-    depends_on:
-      - api
 
   api:
     container_name: api
