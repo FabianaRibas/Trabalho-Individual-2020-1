@@ -41,7 +41,7 @@ jobs:
         sudo docker cp client:/client/coverage /client/coverage
         sudo docker cp api:/api/coverage /api/coverage
     - name: code climate coverage
-      uses: paambaati/codeclimate-action@v2.2.4
+      uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
       with:
