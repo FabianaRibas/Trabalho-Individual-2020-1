@@ -8,15 +8,15 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: build api containers
-        run: docker-compose up --build -d
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: build api containers
+#         run: docker-compose up --build -d
         
-  test:
-    needs: [ build ]
+  tests:
+#     needs: [ build ]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -24,29 +24,39 @@ jobs:
         working-directory: .
     steps:
     - uses: actions/checkout@v2
+      
     - name: Build api container
       run:  |
         docker-compose up --detach --build db api
+        
     - name: Run api tests
       run: |
         docker-compose run -e "RAILS_ENV=test" api rake test
+        
     - name: Build client container
       run: |
         docker-compose up --detach --build client
+        
     - name: Run client tests
       run: |
         docker-compose run client yarn run test:unit
-#     - name: Test coverage results
-#       run: |
-#         sudo mkdir /client /api
-#         sudo docker cp client:/client/coverage /client/coverage
-#         sudo docker cp api:/api/coverage /api/coverage
-#     - name: code climate coverage
-#       uses: paambaati/codeclimate-action@v2.7.5
-#       env:
-#         CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
-#       with:
-#         coverageLocations: |
-#           /client/coverage/lcov.info:lcov
-#           /api/coverage/.resultset.json:simplecov
+        
+    - name: API test coverage results
+      run: |
+        sudo mkdir /api
+        sudo docker cp api:/api/coverage /api/coverage
+        
+    - name: Client test coverage results
+      run: |
+        sudo mkdir /client
+        sudo docker cp client:/client/coverage /client/coverage
+        
+    - name: code climate coverage
+      uses: paambaati/codeclimate-action@v2.7.5
+      env:
+        CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
+      with:
+        coverageLocations: |
+          /client/coverage/lcov.info:lcov
+          /api/coverage/.resultset.json:simplecov
     
