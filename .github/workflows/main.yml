@@ -16,7 +16,7 @@ jobs:
       - name: build api containers
         run:   docker-compose up -d --build
         
-  test:
+  api_test:
     needs: [ build ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -28,12 +28,12 @@ jobs:
     - name: Run api tests
       run: |
         docker-compose run api bundle exec rails test
-    - name: Run client tests
-      run: |
-        docker-compose run client yarn run test:unit
+#     - name: Run client tests
+#       run: |
+#         docker-compose run client yarn run test:unit
           
   coverage:
-    needs: [ test ]
+    needs: [ api_test ]
     name: code climate coverage
     runs-on: ubuntu-latest
     steps:
