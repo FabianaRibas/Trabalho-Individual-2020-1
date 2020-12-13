@@ -42,10 +42,10 @@ jobs:
         docker-compose run client yarn run test:unit
         
     - name: Api test coverage results
-      working-directory: ./api
+      working-directory: .
       run: |
         sudo mkdir /api
-        sudo docker cp api:./coverage api/coverage
+        sudo docker cp api:/api/coverage api/coverage
         
 #     - name: Client test coverage results
 #       working-directory: ./client
