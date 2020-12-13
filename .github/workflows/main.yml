@@ -14,42 +14,13 @@ jobs:
       - name: build api containers
         run:   docker-compose up --build -d
         
-  api_test:
+  test:
     needs: [ build ]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
       run:
         working-directory: .
-    steps:
-    - uses: actions/checkout@v2
-    - name: build api container
-      run:  |
-        docker-compose up --detach --build db api
-    - name: Run api tests
-      run: |
-        docker-compose run api rake test
-
-  client_test:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: .
-    steps:
-    - uses: actions/checkout@v2
-    - name: build client containers
-      run: |
-        docker-compose up --detach --build client
-    - name: Run client tests
-      run: |
-        docker-compose run client yarn run test:unit
-
-  coverage:
-    needs: [ build ]
-    name: code climate coverage
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@master
@@ -58,8 +29,26 @@ jobs:
     - run: npm install -g yarn
     - run: yarn install
     - run: yarn build
+    - uses: actions/checkout@v2
+    - name: build api container
+      run:  |
+        docker-compose up --detach --build db api
+    - name: Run api tests
+      run: |
+        docker-compose run api rake test
+    - name: build client containers
+      run: |
+        docker-compose up --detach --build client
+    - name: Run client tests
+      run: |
+        docker-compose run client yarn run test:unit
+    - name: code climate coverage
     - uses: paambaati/codeclimate-action@v2.2.4
       env:
         CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
       with:
-        coverageCommand: yarn coverage
+        coverageCommand: yarn run coverage
+        coverageLocations: |
+          ${{github.workspace}}/client/coverage/lcov.info:lcov
+          ${{github.workspace}}/api/coverage/.resultset.json:simplecov
+    
