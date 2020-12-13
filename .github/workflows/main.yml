@@ -45,13 +45,13 @@ jobs:
       working-directory: ./api
       run: |
         sudo mkdir /api
-        sudo docker cp ./api:/coverage /api/coverage
+        sudo docker cp api:./api/coverage /api/coverage
         
     - name: Client test coverage results
       working-directory: ./client
       run: |
         sudo mkdir /client
-        sudo docker cp ./client:/coverage /client/coverage
+        sudo docker cp client:./client/coverage /client/coverage
         
     - name: code climate coverage
       uses: paambaati/codeclimate-action@v2.7.5
