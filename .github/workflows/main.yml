@@ -42,21 +42,26 @@ jobs:
         docker-compose run client yarn run test:unit
         
     - name: API test coverage results
+      working-directory: ./api
       run: |
         sudo mkdir /api
-        sudo docker cp api:/api/coverage /api/coverage
+        sudo docker cp ./api:/coverage /api/coverage
         
     - name: Client test coverage results
+      working-directory: ./client
       run: |
         sudo mkdir /client
-        sudo docker cp client:/client/coverage /client/coverage
+        sudo docker cp ./client:/coverage /client/coverage
         
     - name: code climate coverage
       uses: paambaati/codeclimate-action@v2.7.5
       env:
-        CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
+        CC_TEST_REPORTER_ID: fa9c2973d9771077ecef0c100926da8b49df1b34222ec5cc436a12d8beb1d9ad
       with:
         coverageLocations: |
-          /client/coverage/lcov.info:lcov
-          /api/coverage/.resultset.json:simplecov
+          ./client/coverage/lcov.info:lcov
+          ./api/coverage/lcov.info:lcov
+          ./client/coverage/.resultset.json:simplecov
+          ./api/coverage/.resultset.json:simplecov
+    
     
