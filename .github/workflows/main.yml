@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 5
     defaults:
       run:
-        working-directory: ./Trabalho-Individual-2020-1
+        working-directory: Trabalho-Individual-2020-1
     steps:
     - uses: actions/checkout@v2
     - name: Run api tests
