@@ -31,33 +31,6 @@ jobs:
     - name: Run client tests
       run: |
         docker-compose run client yarn run test:unit
-
-          
-#   api_test:
-#     needs: [ build ]
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 5
-#     defaults:
-#       run:
-#         working-directory: ./api
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Run api tests
-#       run: |
-#         docker-compose run api bundle exec rails test
-        
-#   client_test:
-#     needs: [ build ]
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 5
-#     defaults:
-#       run:
-#         working-directory: ./client
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Run client tests
-#       run: |
-#         docker-compose run client yarn run test:unit
           
   coverage:
     needs: [ test ]
