@@ -11,42 +11,51 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
     steps:
       - uses: actions/checkout@v2
       - name: build api containers
         run:   docker-compose up -d --build
+      - name: Run api tests
+        run: |
+          docker-compose run api bundle exec rails test
+      - name: Run client tests
+        run: |
+          docker-compose run client yarn run test:unit
         
-  api_test:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: .
-    steps:
-    - uses: actions/checkout@v2
-    - name: build api containers
-      run:  |
-        docker-compose up -d --build
-    - name: Run api tests
-      run: |
-        docker-compose run api bundle exec rails test
+#   api_test:
+#     needs: [ build ]
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     defaults:
+#       run:
+#         working-directory: .
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: build api containers
+#       run:  |
+#         docker-compose up -d --build
+#     - name: Run api tests
+#       run: |
+#         docker-compose run api bundle exec rails test
 
-  client_test:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: .
-    steps:
-    - uses: actions/checkout@v2
-    - name: build api containers
-      run: |
-        docker-compose up -d --build
-    - name: Run client tests
-      run: |
-        docker-compose run client yarn run test:unit
+#   client_test:
+#     needs: [ build ]
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     defaults:
+#       run:
+#         working-directory: .
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: build api containers
+#       run: |
+#         docker-compose up -d --build
+#     - name: Run client tests
+#       run: |
+#         docker-compose run client yarn run test:unit
 
   coverage:
     needs: [ client_test, api_test ]
