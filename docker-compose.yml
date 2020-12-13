@@ -1,12 +1,15 @@
 version: "3.8"
 services:
   db:
-    container_name: postgres
+    container_name: db
     image: postgres:13.1-alpine
     restart: always
+    ports:
+      - 5432:5432
     networks:
       - aplication_production
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
   client:
@@ -35,6 +38,7 @@ services:
       dockerfile: ./api/Dockerfile
       cache_from:
         - ruby:2.5.7
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
     ports:
       - 3000:3000
     volumes:
