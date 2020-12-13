@@ -19,10 +19,10 @@ jobs:
   api_test:
     needs: [ build ]
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     defaults:
       run:
-        working-directory: ./api
+        working-directory: .
     steps:
     - uses: actions/checkout@v2
     - name: Run api tests
@@ -32,10 +32,10 @@ jobs:
   client_test:
     needs: [ build ]
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     defaults:
       run:
-        working-directory: ./client
+        working-directory: .
     steps:
     - uses: actions/checkout@v2
     - name: Run client tests
