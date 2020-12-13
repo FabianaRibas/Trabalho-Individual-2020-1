@@ -12,4 +12,3 @@ RUN bundle install
 CMD ["bundle", "exec", "rake", "db:drop"]
 CMD ["bundle", "exec", "rake", "db:create"]
 CMD ["bundle", "exec", "rake", "db:migrate"]
-CMD ["rails", "server"]
