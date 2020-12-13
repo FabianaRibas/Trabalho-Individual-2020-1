@@ -4,9 +4,7 @@ on:
   push:
   pull_request:
     branches: [ master ]
-  deployment:
-    branches: [ master ]
-
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,8 +31,9 @@ jobs:
       run: |
         docker-compose run -e "RAILS_ENV=test" api rake test
 
-    - name: Sonar coverage scan
-      uses: sonarsource/sonarcloud-github-action@master
+    - name: API Sonar coverage scan
+      with:
+        projectBaseDir: ./api
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -58,8 +57,10 @@ jobs:
       run: |
         docker-compose run client yarn run test:unit
 
-    - name: Sonar coverage scan
+    - name: Client Sonar coverage scan
       uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: ./client
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
