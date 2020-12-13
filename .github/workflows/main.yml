@@ -27,7 +27,7 @@ jobs:
       
     - name: Build api container
       run:  |
-        docker-compose up --detach --build db api
+        docker-compose up --detach --build -d db api
         
     - name: Run api tests
       run: |
@@ -35,7 +35,7 @@ jobs:
         
     - name: Build client container
       run: |
-        docker-compose up --detach --build client
+        docker-compose up --detach --build -d client
         
     - name: Run client tests
       run: |
@@ -45,13 +45,13 @@ jobs:
       working-directory: ./api
       run: |
         sudo mkdir /api
-        sudo docker cp api/coverage|- api:/api/coverage
+        suso docker cp api:./coverage api/coverage|-
         
-    - name: Client test coverage results
-      working-directory: ./client
-      run: |
-        sudo mkdir /client
-        sudo docker cp client/coverage|- client:/client/coverage
+#     - name: Client test coverage results
+#       working-directory: ./client
+#       run: |
+#         sudo mkdir /client
+#         sudo docker cp client/coverage|- client:/client/coverage
         
     - name: code climate coverage
       uses: paambaati/codeclimate-action@v2.7.5
