@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run:  |
-        docker-compose up api --build -d
+        docker-compose up --detach --build api
     - name: Run api tests
       run: |
         docker-compose run api bundle exec rails test
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run: |
-        docker-compose up client --build -d
+        docker-compose up --detach --build client
     - name: Run client tests
       run: |
         docker-compose run client yarn run test:unit
