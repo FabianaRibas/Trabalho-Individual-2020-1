@@ -36,17 +36,17 @@ jobs:
     - name: Run client tests
       run: |
         docker-compose run client yarn run test:unit
-    - name: Test coverage results
-      run: |
-        sudo mkdir /client /api
-        sudo docker cp client:/client/coverage /client/coverage
-        sudo docker cp api:/api/coverage /api/coverage
-    - name: code climate coverage
-      uses: paambaati/codeclimate-action@v2.7.5
-      env:
-        CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
-      with:
-        coverageLocations: |
-          /client/coverage/lcov.info:lcov
-          /api/coverage/.resultset.json:simplecov
+#     - name: Test coverage results
+#       run: |
+#         sudo mkdir /client /api
+#         sudo docker cp client:/client/coverage /client/coverage
+#         sudo docker cp api:/api/coverage /api/coverage
+#     - name: code climate coverage
+#       uses: paambaati/codeclimate-action@v2.7.5
+#       env:
+#         CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
+#       with:
+#         coverageLocations: |
+#           /client/coverage/lcov.info:lcov
+#           /api/coverage/.resultset.json:simplecov
     
