@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: build api containers
       run:  |
-        docker-compose up --detach --build api
+        docker-compose up --detach --build api db
     - name: Run api tests
       run: |
         docker-compose run api rake test
@@ -39,7 +39,7 @@ jobs:
         working-directory: .
     steps:
     - uses: actions/checkout@v2
-    - name: build api containers
+    - name: build client containers
       run: |
         docker-compose up --detach --build client
     - name: Run client tests
