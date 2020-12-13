@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run api tests
       run: |
-        docker-compose run --no-deps api bundle exec rails test
+        docker-compose run api bundle exec rails test
 
   client_test:
     needs: [ build ]
@@ -40,7 +40,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run client tests
       run: |
-        docker-compose run --no-deps client yarn run test:unit
+        docker-compose run client yarn run test:unit
 
   coverage:
     needs: [ client_test, api_test ]
