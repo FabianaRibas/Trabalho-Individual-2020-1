@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
   deployment:
@@ -11,51 +9,42 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build api containers
+        run:   docker-compose up --build
+        
+  api_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: .
     steps:
-      - uses: actions/checkout@v2
-      - name: build api containers
-        run:   docker-compose up -d --build
-      - name: Run api tests
-        run: |
-          docker-compose run api bundle exec rails test
-      - name: Run client tests
-        run: |
-          docker-compose run client yarn run test:unit
-        
-#   api_test:
-#     needs: [ build ]
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 10
-#     defaults:
-#       run:
-#         working-directory: .
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: build api containers
-#       run:  |
-#         docker-compose up -d --build
-#     - name: Run api tests
-#       run: |
-#         docker-compose run api bundle exec rails test
+    - uses: actions/checkout@v2
+    - name: build api containers
+      run:  |
+        docker-compose up --build
+    - name: Run api tests
+      run: |
+        docker-compose run api bundle exec rails test
 
-#   client_test:
-#     needs: [ build ]
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 10
-#     defaults:
-#       run:
-#         working-directory: .
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: build api containers
-#       run: |
-#         docker-compose up -d --build
-#     - name: Run client tests
-#       run: |
-#         docker-compose run client yarn run test:unit
+  client_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: .
+    steps:
+    - uses: actions/checkout@v2
+    - name: build api containers
+      run: |
+        docker-compose up --build
+    - name: Run client tests
+      run: |
+        docker-compose run client yarn run test:unit
 
   coverage:
     needs: [ build ]
@@ -74,15 +63,3 @@ jobs:
         CC_TEST_REPORTER_ID: 9f9ec2b085093cb9f44faa57d682351d69e2d89621a2a8ecf3d7d34cb998ea26
       with:
         coverageCommand: yarn coverage
-     
-#   deploy:
-#     needs: [ build, test ]
-#     name: Deploy to Heroku
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: akhileshns/heroku-deploy@v3.7.8 # This is the action
-#         with:
-#           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-#           heroku_app_name: "gces-trabalho"
-#           heroku_email: "flmoranguinho@gmail.com"
