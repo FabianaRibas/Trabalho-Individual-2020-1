@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: ./client/Dockerfile
       cache_from:
-        - node:lts-alpine
+        - node:14
     ports:
       - 8080:8080
     volumes:

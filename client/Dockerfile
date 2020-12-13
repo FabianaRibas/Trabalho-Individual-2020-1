@@ -1,14 +1,11 @@
-FROM node:lts-alpine
+FROM node:14
 # instala um servidor http simples para servir conteúdo estático
 RUN npm install -g http-server
 WORKDIR /client
 # add /app/node_modules/.bin to $PATH
 ENV PATH /client/node_modules/.bin:$PATH
-COPY . .
+RUN npm install -g @vue/cli@3.7.0
 RUN npm install
-RUN npm install @vue/cli@3.7.0 -g
-
-# Start the main process.
-CMD ["vue-cli-service", "serve"]
-# CMD ["npm", "run", "serve"]
+COPY . .
+CMD ["npm", "run", "serve"]
 
