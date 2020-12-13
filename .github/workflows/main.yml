@@ -29,7 +29,7 @@ jobs:
         docker-compose up --detach --build db api
     - name: Run api tests
       run: |
-        docker-compose run api rake test
+        docker-compose run -e "RAILS_ENV=test" api rake test
     - name: Build client container
       run: |
         docker-compose up --detach --build client
