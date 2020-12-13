@@ -1,12 +1,15 @@
 version: "3.8"
 services:
   db:
-    container_name: postgres
+    container_name: db
     image: postgres:13.1-alpine
     restart: always
+    ports:
+      - 5432:5432
     networks:
       - aplication_production
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
   client:
