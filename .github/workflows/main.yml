@@ -23,9 +23,12 @@ jobs:
         working-directory: .
     steps:
     - uses: actions/checkout@v2
-    - name: build api containers
+    - name: build bd container
       run:  |
-        docker-compose up --detach --build db api
+        docker-compose up --detach --build db
+    - name: build api container
+      run:  |
+        docker-compose up --detach --build api
     - name: Run api tests
       run: |
         docker-compose run api rake test
