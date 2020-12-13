@@ -28,10 +28,20 @@ jobs:
     - name: Run api tests
       run: |
         docker-compose run api bundle exec rails test
-#     - name: Run client tests
-#       run: |
-#         docker-compose run client yarn run test:unit
-          
+
+  client_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run client tests
+      run: |
+        docker-compose run client yarn run test:unit
+
   coverage:
     needs: [ api_test ]
     name: code climate coverage
