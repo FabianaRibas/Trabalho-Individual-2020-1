@@ -43,7 +43,7 @@ jobs:
         docker-compose run client yarn run test:unit
 
   coverage:
-    needs: [ api_test ]
+    needs: [ client_test, api_test ]
     name: code climate coverage
     runs-on: ubuntu-latest
     steps:
