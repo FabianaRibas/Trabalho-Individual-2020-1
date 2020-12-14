@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+  deployment:
+    branches: [ master ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build api containers
+        run: docker-compose up --build -d
+        
+  api_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build api container
+      run:  |
+        docker-compose up --detach --build db api
+        
+    - name: Run api tests
+      run: |
+        docker-compose run -e "RAILS_ENV=test" api rake test
+
+    - name: API Sonar coverage scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+    
+  client_test:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build client container
+      run: |
+        docker-compose up --detach --build client
+
+    - name: Run client tests
+      run: |
+        docker-compose run client yarn run test:unit
+
+    - name: Client Sonar coverage scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    
+    
