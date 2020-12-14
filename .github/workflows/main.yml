@@ -28,7 +28,8 @@ jobs:
         
     - name: Run api tests
       run: |
-        docker-compose run -e  bundle exec api "RAILS_ENV=test" test
+        docker-compose run api bundle exec rails test
+
 
     - name: API Sonar coverage scan
       uses: SonarSource/sonarcloud-github-action@master
