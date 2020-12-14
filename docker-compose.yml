@@ -30,7 +30,6 @@ services:
 
   api:
     container_name: api
-    restart: always
     networks:
       - aplication_production
     build:
