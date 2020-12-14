@@ -28,7 +28,7 @@ jobs:
         
     - name: Run api tests
       run: |
-        docker-compose run api bundle exec rails test
+        docker-compose run api bundle exec rake test
 
 
     - name: API Sonar coverage scan
